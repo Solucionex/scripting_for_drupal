@@ -1,0 +1,302 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installing Complete Environment for Drupal based in Docker/Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@gmail.com]
+# Title: Drupal Installer with DDEV
+# Description: Download and install a Drupal codebase project inside a new environment based in docker - ddev. 
+#
+# davidjguru@gmail.com
+# https://www.therussianlullaby.com
+#-----------------------------------------------------------
+#
+
+# Print the initial Splash in screen (console)
+echo "                                                                                                       "
+sleep 1
+echo "                  ___          ___          ___         ___          ___         ___          ___      "
+sleep 2
+echo "     _____       /\  \        /\__\        /|  |       /\  \        /\  \       /\  \        /\  \     "
+sleep 2
+echo "    /::\  \      \:\  \      /:/  /       |:|  |      /::\  \      /::\  \     /::\  \      /::\  \    "
+sleep 2
+echo "   /:/\:\  \      \:\  \    /:/  /        |:|  |     /:/\:\  \    /:/\:\__\   /:/\:\  \    /:/\:\  \   "
+sleep 2
+echo "  /:/ /::\__\ ___  \:\  \  /:/  /  ___  __|:|  |    /:/ /::\  \  /:/ /:/  /  /:/  \:\  \  /:/  \:\  \  "
+sleep 2
+echo " /:/_/:/\:|__/\  \  \:\__\/:/__/  /\__\/\ |:|__|___/:/_/:/\:\__\/:/_/:/__/__/:/__/ \:\__\/:/__/ \:\__\ "
+sleep 2
+echo " \:\/:/ /:/  |:\  \ /:/  /\:\  \ /:/  /\:\/:::::/__|:\/:/  \/__/\:\/:::::/  |:\  \ /:/  /\:\  \ /:/  / "
+sleep 2
+echo "  \::/_/:/  / \:\  /:/  /  \:\  /:/  /  \::/~~/~    \::/__/      \::/~~/~~~~ \:\  /:/  /  \:\  /:/  /  "
+sleep 2
+echo "   \:\/:/  /   \:\/:/  /    \:\/:/  /    \:\~~\      \:\  \       \:\~~\      \:\/:/  /    \:\/:/  /   "
+sleep 2
+echo "    \::/  /     \::/  /      \::/  /      \:\__\      \:\__\       \:\__\      \::/  /      \::/  /    "
+sleep 2
+echo "     \/__/       \/__/        \/__/        \/__/       \/__/        \/__/       \/__/        \/__/     "
+sleep 1
+echo -e  "\n\n    \e[1;31mBuckaroo - v1.0.5\e[0m"
+sleep 1
+echo  -e "    \e[1;31mBuckaroo, a little Drupal installer for local environments...\e[0m"
+sleep 2
+
+# Preparations 
+echo -e "   \e[1;4;31mWelcome to the Drupal Automatic Installer\e[0m"
+
+# Test Internet connection
+wget -q --spider http://google.com
+if [ $? -eq 0 ]; then
+  echo "You are...Online"
+else
+  echo "Sorry but you are Offline"
+fi
++
+## Search for docker packages previously installed. 
+echo -e "   \e[1;4;31mNow, we are going to search for installed docker packages: \e[0m"
+apt list --installed |grep docker
+
+## Uninstall the existing packages and stop Apache Server in Host.
+echo -e "   \e[1;4;31mAnd now uninstalling all the docker packages: \e[0m"
+sudo apt remove containerd docker.io docker-ce docker-ce-cli docker-compose -y
+sudo /etc/init.d/apache2 stop
+
+## Confirm the uninstall.
+echo -e "   \e[1;4;31mConfirm the uninstall looking for the packages: \e[0m"
+apt list --installed |grep docker 
+
+## Update the list of packages.
+echo -e "   \e[1;4;31mUpdate the package list: \e[0m"
+sudo apt  update
+
+
+# Installs some basic resources in your System (Ubuntu).
+echo -e "   \e[1;4;31mInstalling some basic resources for your system: \e[0m"
+sudo apt install -y build-essential apt-transport-https ca-certificates jq curl software-properties-common file git
+
+# Installs Docker.
+echo -e "   \e[1;4;31mInstalling Docker... \e[0m"
+sudo apt install -y containerd
+sudo apt install -y docker.io
+
+# Enables Docker.
+echo -e "   \e[1;4;31mEnabling Docker Engine...\e[0m"
+sudo systemctl unmask docker
+sudo systemctl start docker
+sudo systemctl enable --now docker
+
+# Adds the current user to the Docker group.
+echo -e "   \e[1;4;31mAdding your current user to the new Docker group.\e[0m"
+sudo usermod -aG docker $USER
+
+# Grants permissions over the Docker system for users.
+echo -e "   \e[1;4;31mGrants permissions over the Docker system.\e[0m"
+sudo chmod 666 /var/run/docker*
+
+# Tests if Docker is running or not.
+echo -e "   \e[1;4;31mDocker has been installed in your system. Currently Docker is: \e[0m"
+systemctl is-active docker
+
+# Checks if Docker is ready.
+echo -e "   \e[1;4;31mThis is your current Docker version: \e[0m"
+docker --version
+
+# Verifies Docker running.
+echo -e "   \e[1;4;31mWe're running a Docker initial testing - hello world -> \e[0m"
+docker run hello-world
+
+# Installs Docker Compose.
+echo -e "   \e[1;4;31mInstalling Docker Compose:    \e[0m"
+sudo apt install -y docker-compose
+
+# Checks if Docker Compose was installed and gets the current version.
+echo -e "   \e[1;4;31mDocker Compose has been installed in your system: \e[0m"
+docker-compose --version
+
+# Checks if DDEV was installed by brew or not updating brew and previous versions of DDEV.
+if [[ $(which brew) ]]; then
+    echo -e "   \e[1;4;31mThere was detected a version of Brew installed in your sistem. \e[0m"
+    # Updates the current version of the Brew Package Manager.
+    brew update
+    echo -e "   \e[1;4;31mUpgrading your current version of DDEV... \e[0m"
+    # Upgrades the current version of DDEV.
+    brew upgrade ddev
+    echo -e "   \e[1;4;31mDDEV was upgraded in your system: \e[0m"
+    ddev version
+else
+    echo -e "   \e[1;4;31mThere wasn't detected a version of Brew installed in your sistem. \e[0m"
+    # Downloads and executes the DDEV basic installation script.
+    echo -e "   \e[1;4;31mProcessing the DDEV basic installation script...\e[0m"
+    curl -L https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh | bash
+    # Checks if DDEV is available now in your system.
+    echo -e "   \e[1;4;31mDDEV was installed in your system: \e[0m"
+    ddev version
+fi
+
+## Get the keyname of the project.
+echo -e "   \e[1;4;31mWrite your project name: \e[0m"
+read -p $'   \e[1;36mKeyname of the project:\e[0m ' varkeyname
+varkeyname=${varkeyname:-d8deploy}
+
+# Build a new Drupal-based project using DDEV.
+echo -e "    \e[1;4;31mMoving to build the Drupal codebase: \e[0m"
+mkdir $varkeyname && cd $varkeyname
+
+## Creates, configures and Deploys a new Drupal site in the current location. 
+echo -e "    \e[1;4;31mCreating a specific Drupal project... \e[0m"
+ddev config --project-type=drupal9 --docroot=web --create-docroot
+ddev start
+ddev composer create "drupal/recommended-project"
+ddev composer require drush/drush
+ddev exec drush site:install standard --site-name=$varkeyname --account-name=admin --account-pass=admin --locale=en --yes
+
+## Install and enable some Basic Drupal Modules ready for work: devel, masquerade, admin_toolbar and webprofiler.
+echo -e "    \e[1;4;31mNow with a new Drupal, we want some basic modules: \e[0m"
+ddev composer require drupal/devel 
+ddev composer require drupal/masquerade 
+ddev composer require drupal/admin_toolbar
+ddev exec drush en -y devel 
+ddev exec drush en -y masquerade 
+ddev exec drush en -y admin_toolbar 
+ddev exec drush en -y webprofiler
+ddev exec drush cr
+
+# Building subtheming for the project.
+
+## Making the required folders.
+echo -e "    \e[1;4;31mBuilding the subtheming for the project... \e[0m"
+ddev exec mkdir /var/www/html/web/themes/custom
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/js
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/css
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/less
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/templates
+
+## Creates the custom subtheme basic scaffolding.
+ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF1
+name: Custom Drupal Subtheme
+type: theme 
+description: 'This is a custom Drupal Subtheme'
+core: 8.x
+core_version_requirement: ^8 || ^9
+# Father theme
+base theme: bartik
+# Library definition
+libraries:
+  - custom_subtheme/global-styling
+  - custom_subtheme/global-scripts
+EOF1
+  
+# Creates the libraries declaration.
+ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF2
+global-styling:
+  version: 1.x 
+  css:
+    theme:
+      css/custom_subtheme.css: {} 
+global-scripts:
+  version: 1.x 
+  js:
+    js/custom_subtheme.js: {}
+  dependencies:   
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+EOF2
+
+# Builds the initial JavaScript file.
+ddev exec cat > web/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF3
+/**
+ * @file Main JS file for the theme.
+ */
+(function ($, Drupal){
+  console.log('hi');
+})(jQuery, Drupal);
+EOF3
+
+## Creates an initial empty file for CSS styling.
+touch web/themes/custom/custom_subtheme/css/custom_subtheme.css
+
+## Put the Drupal instalation in dev mode turning off the cache system and enabling TWIG debug.
+ddev exec cat > web/sites/default/services.yml << EOF4
+parameters:
+  session.storage.options:
+    gc_probability: 1
+    gc_divisor: 100
+    gc_maxlifetime: 200000
+    cookie_lifetime: 2000000
+  twig.config:
+    debug: true
+    auto_reload: true
+    cache: false
+  renderer.config:
+    required_cache_contexts: ['languages:language_interface', 'theme', 'user.permissions']
+    auto_placeholder_conditions:
+      max-age: 0
+      contexts: ['session', 'user']
+      tags: []
+  http.response.debug_cacheability_headers: false
+  factory.keyvalue:
+    {}
+  factory.keyvalue.expirable:
+    {}
+  filter_protocols:
+    - http
+    - https
+    - ftp
+    - news
+    - nntp
+    - tel
+    - telnet
+    - mailto
+    - irc
+    - ssh
+    - sftp
+    - webcal
+    - rtsp
+  cors.config:
+    enabled: false
+    allowedHeaders: []
+    allowedMethods: []
+    allowedOrigins: ['*']
+    exposedHeaders: false
+    maxAge: false
+    supportsCredentials: false
+EOF4
+
+# Install and enable subtheme.
+ddev exec drush then custom_subtheme
+ddev exec drush config-set -y system.theme default custom_subtheme
+ddev exec drush cr
+
+
+# Installing and enabling other resources.
+
+## Install packages in the new system.
+echo -e "    \e[1;4;31mIn this block, we will install some packages like sqlite or git-flow. Also we will enable Xdebug: \e[0m"
+ddev exec sudo apt update
+ddev exec sudo apt install -y sqlite3 git-flow
+ddev xdebug
+
+## Installing node, npm and Angular.
+echo -e "    \e[1;4;31mInstalling node, npm and Angular in our new system: \e[0m"
+ddev exec curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash
+ddev exec sudo apt install -y nodejs
+ddev exec node -v
+ddev exec npm -v
+ddev exec sudo npm install @angular/cli -g
+ddev exec ng version
+
+# Getting the info about the installation.
+
+## Describe the whole system.
+echo -e "    \e[1;4;31mThis is your new DDEV - Drupal deploy: \e[0m"
+ddev describe
+
+echo -e "    \e[1;4;31mThe whole  installation has been completed, see you inside the new container...Happy Hacking!!! \e[0m"
+ddev launch
+ddev ssh
