@@ -1,0 +1,24 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installing a Acquia Lightning Drupal Distro in local environment using Docker/Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: Drupal Acquia Lightning Installer with DDEV
+# Description: Download and install Acquia Lightning codebase in a new environment based in docker - ddev. 
+#
+# davidjguru@gmail.com
+# https://www.therussianlullaby.com
+#-----------------------------------------------------------
+#
+
+mkdir PROJECTNAME
+cd PROJECTNAME
+ddev config --project-type=drupal9 --docroot=web --create-docroot
+echo y | ddev composer create -acquia/lightning-project
+ddev composer require drush/drush drupal/admin_toolbar drupal/console drupal/devel drupal/domain drupal/tmgmt 
+ddev start
+ddev exec drush si --site-name=PROJECT-NAME --account-name=admin --account-pass=admin -y
+
