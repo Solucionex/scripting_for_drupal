@@ -4,17 +4,23 @@
 #
 #-----------------------------------------------------------------------------------
 # 
-# Installing Complete Environment for Drupal based in Docker/Docker Compose / DDEV 
-# [David Rodríguez, @davidjguru] [davidjguru@gmail.com]
+# Installing Complete Environment for Drupal based in Docker / Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com
 # Title: Drupal Installer with DDEV
 # Description: Download and install a Drupal codebase project inside a new environment based in docker - ddev. 
 #
-# davidjguru@gmail.com
+# davidjguru@solucionex.com
 # https://www.therussianlullaby.com
+# https://www.solucionex.com
 #-----------------------------------------------------------
 #
 
-# Print the initial Splash in screen (console)
+#########################################
+## Area Number One: Defining Functions ##
+#########################################
+
+# Print the initial Splash in prompt
+print_splash () {
 echo "                                                                                                       "
 sleep 1
 echo "                  ___          ___          ___         ___          ___         ___          ___      "
@@ -39,23 +45,61 @@ echo "    \::/  /     \::/  /      \::/  /      \:\__\      \:\__\       \:\__\ 
 sleep 2
 echo "     \/__/       \/__/        \/__/        \/__/       \/__/        \/__/       \/__/        \/__/     "
 sleep 1
-echo -e  "\n\n    \e[1;31mBuckaroo - v1.0.5\e[0m"
+echo -e  "\n\n    \e[1;31mBuckaroo - v1.0.6\e[0m"
 sleep 1
 echo  -e "    \e[1;31mBuckaroo, a little Drupal installer for local environments...\e[0m"
+sleep 2
+echo  -e "    \e[1;31mCreated by David Rodríguez, @davidjguru. Current version: October 2020. All the hugs to davidjguru@gmail.com\e[0m"
+sleep 2
+
+echo  -e "\n\n    \e[1;31mAs a utility based in FLOSS(Free, Libre & Open Source Software),\e[0m"
+echo  -e "    \e[1;31myou have the four essential freedoms:\e[0m"
+echo  -e "    \e[1;31m0- The freedom to run the program as you wish, for any purpose (freedom 0).\e[0m"
+echo  -e "    \e[1;31m1- The freedom to study how the program works, and change it (freedom 1).\e[0m"
+echo  -e "    \e[1;31m        (Access to the source code is a precondition for this.)\e[0m"
+echo  -e "    \e[1;31m2- The freedom to redistribute copies so you can help others (freedom 2).\e[0m"
+echo  -e "    \e[1;31m3- The freedom to distribute copies of your modified versions to others (freedom 3).\e[0m"
+echo  -e "    \e[1;31m        (By doing this you can give the whole community a chance to benefit from your changes.)\e[0m"
+sleep 2
+echo  -e "\n\n     \e[1;31m               Licensed under GPL - GNU General Public License, version 3\e[0m"
 sleep 2
 
 # Preparations 
 echo -e "   \e[1;4;31mWelcome to the Drupal Automatic Installer\e[0m"
+}
+
+# Obtain the main data from system and current user
+get_data () {
+  currentuser=$(whoami)
+  currentfolder=$(pwd)
+  currentkernel=$(uname -r)
+  currentos=$(sed -n 4p /etc/lsb-release | cut -d'"' -f 2)
+  currentdate=$(date +"%d-%m-%Y")
+}
+
+# Print info based in data
+print_info () {
+  echo -e "\n\n\n    \e[1;35mWelcome to this script, Dear User \e[0m $currentuser \e[1;35m.\e[0m"
+  echo -e "    \e[1;35mYou are executing the script today,\e[0m $currentdate \e[1;35m.\e[0m"
+  echo -e "    \e[1;35mFrom:\e[0m $currentfolder \e[1;35m directory.\e[0m"
+  echo -e "    \e[1;35mInside your machine named:\e[0m $HOSTNAME \e[1;35m.\e[0m"
+  echo -e	"    \e[1;35mYour Operating System is:\e[0m $currentos \e[1;35m. \e[0m"
+  echo -e "    \e[1;35mAnd your kernel version is:\e[0m $currentkernel \e[1;35m. \e[0m"
+  echo -e	"    \e[1;35mLet's go.\e[0m"
+}
 
 # Test Internet connection
+testing_internet () {
 wget -q --spider http://google.com
 if [ $? -eq 0 ]; then
-  echo "You are...Online"
+  echo "Online"
 else
-  echo "Sorry but you are Offline"
+  echo "Offline"
 fi
-+
+}
+
 ## Search for docker packages previously installed. 
+building_docker () {
 echo -e "   \e[1;4;31mNow, we are going to search for installed docker packages: \e[0m"
 apt list --installed |grep docker
 
@@ -115,7 +159,9 @@ sudo apt install -y docker-compose
 # Checks if Docker Compose was installed and gets the current version.
 echo -e "   \e[1;4;31mDocker Compose has been installed in your system: \e[0m"
 docker-compose --version
+}
 
+installing_ddev () {
 # Checks if DDEV was installed by brew or not updating brew and previous versions of DDEV.
 if [[ $(which brew) ]]; then
     echo -e "   \e[1;4;31mThere was detected a version of Brew installed in your sistem. \e[0m"
@@ -135,21 +181,27 @@ else
     echo -e "   \e[1;4;31mDDEV was installed in your system: \e[0m"
     ddev version
 fi
+}
 
+building_codebase () {
 ## Get the keyname of the project.
 echo -e "   \e[1;4;31mWrite your project name: \e[0m"
 read -p $'   \e[1;36mKeyname of the project:\e[0m ' varkeyname
 varkeyname=${varkeyname:-d8deploy}
 
-# Build a new Drupal-based project using DDEV.
+# Builds a new Drupal-based project using DDEV.
 echo -e "    \e[1;4;31mMoving to build the Drupal codebase: \e[0m"
 mkdir $varkeyname && cd $varkeyname
 
 ## Creates, configures and Deploys a new Drupal site in the current location. 
-echo -e "    \e[1;4;31mCreating a specific Drupal project... \e[0m"
+echo -e "    \e[1;4;31mCreating a specific Drupal 9 project... \e[0m"
 ddev config --project-type=drupal9 --docroot=web --create-docroot
+cd .ddev
+## Will add a Portainer container to the local ddev networking.
+wget https://raw.githubusercontent.com/davidjguru/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
+cd ..
 ddev start
-ddev composer create "drupal/recommended-project"
+echo y | ddev composer create "drupal/recommended-project"
 ddev composer require drush/drush
 ddev exec drush site:install standard --site-name=$varkeyname --account-name=admin --account-pass=admin --locale=en --yes
 
@@ -163,9 +215,10 @@ ddev exec drush en -y masquerade
 ddev exec drush en -y admin_toolbar 
 ddev exec drush en -y webprofiler
 ddev exec drush cr
+}
 
 # Building subtheming for the project.
-
+building_subtheming() {
 ## Making the required folders.
 echo -e "    \e[1;4;31mBuilding the subtheming for the project... \e[0m"
 ddev exec mkdir /var/www/html/web/themes/custom
@@ -272,10 +325,10 @@ EOF4
 ddev exec drush then custom_subtheme
 ddev exec drush config-set -y system.theme default custom_subtheme
 ddev exec drush cr
-
+}
 
 # Installing and enabling other resources.
-
+installing_extra_resources () {
 ## Install packages in the new system.
 echo -e "    \e[1;4;31mIn this block, we will install some packages like sqlite or git-flow. Also we will enable Xdebug: \e[0m"
 ddev exec sudo apt update
@@ -290,9 +343,10 @@ ddev exec node -v
 ddev exec npm -v
 ddev exec sudo npm install @angular/cli -g
 ddev exec ng version
+}
 
 # Getting the info about the installation.
-
+final_output () {
 ## Describe the whole system.
 echo -e "    \e[1;4;31mThis is your new DDEV - Drupal deploy: \e[0m"
 ddev describe
@@ -300,3 +354,46 @@ ddev describe
 echo -e "    \e[1;4;31mThe whole  installation has been completed, see you inside the new container...Happy Hacking!!! \e[0m"
 ddev launch
 ddev ssh
+}
+
+####################################################
+## Area Number Two: Executing Functions and calls ##
+####################################################
+
+# Zone One: Obtaining the basic data for the execution of the script
+get_data
+
+# Zone Two: Launching the initial messages and the ASCII art
+print_splash
+
+# Zone Three: Show user info
+print_info
+
+# Zone Four: Testing the Internet Connection
+echo -e "\n    \e[1;35m[1] - Testing your Internet Connection, because we need download some resources.\e[0m"
+echo -e "          \e[1;35mThis is very important, and If you're offline, then the program will Stop.\e[0m"
+testconnection=$(testing_internet)
+sleep 2
+echo -e "          \e[1;36mIn this moment your connection is:\e[0m $testconnection \e[1;36m.\e[0m"
+sleep 2
+if [ $testconnection == "Offline" ]
+then
+  echo -e "          \e[1;36mYour system is not connected to Internet. The program will stop and exit.\e[0m"
+  sleep 10
+  exit 1
+elif [ $testconnection == "Online" ]
+then
+  echo -e "          \e[1;36mYour system is connected to Internet. The program will continue running normally.\e[0m"
+fi
+
+# Zone Five: Docker, Docker Compose and DDEV
+building_docker 
+installing_ddev
+
+# Zone Six: Preparing the local deploy of a new Drupal site
+building_codebase
+building_subtheming
+installing_extra_resources
+
+# Zone Seven: End of actions
+final_output
