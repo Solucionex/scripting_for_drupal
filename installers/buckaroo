@@ -1,11 +1,11 @@
 #!/bin/bash
 # -*- ENCODING: UTF-8 -*-
-
+#
 #
 #-----------------------------------------------------------------------------------
 # 
 # Installing Complete Environment for Drupal based in Docker / Docker Compose / DDEV 
-# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
 # Title: Drupal Installer with DDEV
 # Description: Download and install a Drupal codebase project inside a new environment based in docker - ddev. 
 #
