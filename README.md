@@ -28,4 +28,13 @@ In this folder you will find some resources in order to launch a new Drupal site
   > Features:
     * Installs the Acquia Lightning Distro for Drupal 9: [drupal.org/lightning](https://www.drupal.org/project/lightning).
     * Installs other Drupal basic resources like: drush, admin_toolbar, drupal_console, devel.  
-    * Installs a pair of interesting Drupal contrib modules: [domain for Domain Access](https://www.drupal.org/project/domain) , and [tmgmt for Translation Management Tool](https://www.drupal.org/project/tmgmt).
+    * Installs a pair of interesting Drupal contrib modules: [domain for Domain Access](https://www.drupal.org/project/domain) , and [tmgmt for Translation Management Tool](https://www.drupal.org/project/tmgmt).  
+
+* **Enabling Subtheming:** Bash script, creates and enables a new custom Drupal subtheme from Bartik inside your Drupal installation.    
+  Works with DDEV, just for a DDEV local deployment, executes the script within the main project folder.  
+  > Features:
+    * Creates all the new folders structure.
+    * Creates a new custom subtheme: info.yml, libraries.yml, .js initial file and CSS initial file.
+    * Puts the Drupal installation in dev mode, turning off the cache system and enabling TWIG debug.
+    * Installs and enables new subtheme using Drush.
+    * Launch the Drupal installation through the default browser.
