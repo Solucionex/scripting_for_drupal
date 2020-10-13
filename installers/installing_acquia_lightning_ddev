@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- ENCODING: UTF-8 -*-
-
+#
 #
 #-----------------------------------------------------------------------------------
 # 
@@ -11,14 +11,15 @@
 #
 # davidjguru@gmail.com
 # https://www.therussianlullaby.com
+# https://www.solucionex.com
 #-----------------------------------------------------------
 #
 
 mkdir PROJECTNAME
 cd PROJECTNAME
-ddev config --project-type=drupal9 --docroot=web --create-docroot
-echo y | ddev composer create -acquia/lightning-project
+ddev config --project-type=drupal9 --docroot=docroot--create-docroot
+ddev start
+echo y | ddev composer create acquia/lightning-project
 ddev composer require drush/drush drupal/admin_toolbar drupal/console drupal/devel drupal/domain drupal/tmgmt 
 ddev start
 ddev exec drush si --site-name=PROJECT-NAME --account-name=admin --account-pass=admin -y
-
