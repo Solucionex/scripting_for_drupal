@@ -1,0 +1,137 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Enable subtheming in a Drupal installation based in DDEV. 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: enabling_subtheming
+# Description: Executed from a Drupal local installation using DDEV, will create a new custom subtheme ready-to-work. 
+#
+# davidjguru@gmail.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+## Building Subtheming.
+echo -e "    \e[1;4;31mBuilding the subtheming for the project... \e[0m"
+ddev exec mkdir /var/www/html/web/themes/custom
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/js
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/css
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/less
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/templates
+ddev exec cp /var/www/html/web/core/themes/bartik/logo.svg /var/www/html/web/themes/custom/custom_subtheme/
+
+### Create custom subtheme.
+echo -e "    \e[1;4;31mCreating custom subtheming resources... \e[0m"
+ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF1
+name: Custom Drupal Subtheme
+type: theme 
+description: 'This is a custom Drupal Subtheme'
+core: 8.x
+core_version_requirement: ^8 || ^9
+# Father theme
+base theme: bartik
+# Library definition
+libraries:
+  - custom_subtheme/global-styling
+  - custom_subtheme/global-scripts
+EOF1
+  
+### Creates the libraries declaration.
+echo -e "    \e[1;4;31mCreating the libraries declaration... \e[0m"
+ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF2
+global-styling:
+  version: 1.x 
+  css:
+    theme:
+      css/custom_subtheme.css: {} 
+global-scripts:
+  version: 1.x 
+  js:
+    js/custom_subtheme.js: {}
+  dependencies:   
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+EOF2
+
+### Builds the initial JavaScript file.
+echo -e "    \e[1;4;31mBCreating an initial JavaScript file... \e[0m"
+ddev exec cat > web/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF3
+/**
+ * @file Main JS file for the theme.
+ */
+(function ($, Drupal){
+  console.log('hi');
+})(jQuery, Drupal);
+EOF3
+
+### Creates an initial empty file for CSS styling.
+echo -e "    \e[1;4;31mCreating initial CSS file... \e[0m"
+touch web/themes/custom/custom_subtheme/css/custom_subtheme.css
+
+### Put the Drupal instalation in dev mode turning off the cache system and enabling TWIG debug.
+echo -e "    \e[1;4;31mPassing the Drupal installation to dev mode... \e[0m"
+ddev exec cat > web/sites/default/services.yml << EOF4
+parameters:
+  session.storage.options:
+    gc_probability: 1
+    gc_divisor: 100
+    gc_maxlifetime: 200000
+    cookie_lifetime: 2000000
+  twig.config:
+    debug: true
+    auto_reload: true
+    cache: false
+  renderer.config:
+    required_cache_contexts: ['languages:language_interface', 'theme', 'user.permissions']
+    auto_placeholder_conditions:
+      max-age: 0
+      contexts: ['session', 'user']
+      tags: []
+  http.response.debug_cacheability_headers: false
+  factory.keyvalue:
+    {}
+  factory.keyvalue.expirable:
+    {}
+  filter_protocols:
+    - http
+    - https
+    - ftp
+    - news
+    - nntp
+    - tel
+    - telnet
+    - mailto
+    - irc
+    - ssh
+    - sftp
+    - webcal
+    - rtsp
+  cors.config:
+    enabled: false
+    allowedHeaders: []
+    allowedMethods: []
+    allowedOrigins: ['*']
+    exposedHeaders: false
+    maxAge: false
+    supportsCredentials: false
+EOF4
+
+### Install and enable subtheme.
+echo -e "    \e[1;4;31mInstalling and enabling subtheme... \e[0m"
+ddev exec drush then custom_subtheme
+ddev exec drush config-set -y system.theme default custom_subtheme
+ddev exec drush cr
+
+## Final steps.
+echo -e "    \e[1;4;31mLaunching the new installation.. \e[0m"
+ddev start
+ddev launch
+ddev ssh
+
