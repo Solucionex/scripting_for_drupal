@@ -1,0 +1,63 @@
+## Builds a General Basic Report
+
+varkeyname=$(pwd)
+mkdir -p ./scripts
+cd scripts/
+sudo -u root bash -c "echo 'Final report post-install about the project: $varkeyname
+--------------------------------------------
+
+Total Space occupied in disk: 
+--------------------------------------------
+
+' > $varkeyname.txt"
+
+sudo -u root bash -c "du -sh ../web/ >> $varkeyname.txt"
+sudo -u root bash -c "echo '
+Partial Space occupied by resources:  
+--------------------------------------------
+
+'>> $varkeyname.txt"
+sudo -u root bash -c "du -sh ../web/* >> $varkeyname.txt"
+
+sudo -u root bash -c "echo '
+Basic info about Drupal, Drush and PHP:
+--------------------------------------------
+
+' >> $varkeyname.txt"
+
+sudo -u root bash -c "../vendor/bin/drush status >> $varkeyname.txt"
+
+sudo -u root bash -c "echo '
+General Installed Packages in Drupal:
+--------------------------------------------
+
+' >> $varkeyname.txt"
+
+sudo -u root bash -c "../vendor/bin/drush pm-list >> $varkeyname.txt"
+
+sudo -u root bash -c "echo '
+Only enabled Modules in Drupal:
+--------------------------------------------
+
+' >> $varkeyname.txt"
+
+sudo -u root bash -c "../vendor/bin/drush pm-list --status="enabled" >> $varkeyname.txt"
+
+sudo -u root bash -c "echo '
+Disabled Modules in Drupal:
+--------------------------------------------
+
+' >> $varkeyname.txt"
+
+sudo -u root bash -c "../vendor/bin/drush pm-list --status="disabled" >> $varkeyname.txt"
+
+sudo -u root bash -c "echo '
+Enabled Modules in Drupal out of Core (Contrib / Custom):
+--------------------------------------------
+
+' >> $varkeyname.txt"
+
+sudo -u root bash -c "../vendor/bin/drush pm-list --type=module --status=enabled --no-core >> $varkeyname.txt"
+
+sudo -u root bash -c "chown -R www-data:www-data $varkeyname.txt; chmod -R 775 $varkeyname.txt"
+cd /var/www/html/$varkeyname
