@@ -1,0 +1,84 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installs Docker, Docker-Compose and DDEV in Ubuntu.
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: enabling_subtheming
+# Description: Installs the last available versions for Docker, Docker-Compose and DDEV. 
+#
+# davidjguru@gmail.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+## Update the list of packages.
+echo -e "   \e[1;4;31mUpdate the package list: \e[0m"
+sudo apt  update
+
+
+# Installs some basic resources in your System (Ubuntu).
+echo -e "   \e[1;4;31mInstalling some basic resources for your system: \e[0m"
+sudo apt install -y build-essential apt-transport-https ca-certificates jq curl software-properties-common file git
+
+# Installs Docker.
+echo -e "   \e[1;4;31mInstalling Docker... \e[0m"
+sudo apt install -y containerd
+sudo apt install -y docker.io
+
+# Enables Docker.
+echo -e "   \e[1;4;31mEnabling Docker Engine...\e[0m"
+sudo systemctl unmask docker
+sudo systemctl start docker
+sudo systemctl enable --now docker
+
+# Adds the current user to the Docker group.
+echo -e "   \e[1;4;31mAdding your current user to the new Docker group.\e[0m"
+sudo usermod -aG docker $USER
+
+# Grants permissions over the Docker system for users.
+echo -e "   \e[1;4;31mGrants permissions over the Docker system.\e[0m"
+sudo chmod 666 /var/run/docker*
+
+# Tests if Docker is running or not.
+echo -e "   \e[1;4;31mDocker has been installed in your system. Currently Docker is: \e[0m"
+systemctl is-active docker
+
+# Checks if Docker is ready.
+echo -e "   \e[1;4;31mThis is your current Docker version: \e[0m"
+docker --version
+
+# Verifies Docker running.
+echo -e "   \e[1;4;31mWe're running a Docker initial testing - hello world -> \e[0m"
+docker run hello-world
+
+# Installs Docker Compose.
+echo -e "   \e[1;4;31mInstalling Docker Compose:    \e[0m"
+sudo apt install -y docker-compose
+
+# Checks if Docker Compose was installed and gets the current version.
+echo -e "   \e[1;4;31mDocker Compose has been installed in your system: \e[0m"
+docker-compose --version
+
+# Checks if DDEV was installed by brew or not updating brew and previous versions of DDEV.
+if [[ $(which brew) ]]; then
+    echo -e "   \e[1;4;31mThere was detected a version of Brew installed in your sistem. \e[0m"
+    # Updates the current version of the Brew Package Manager.
+    brew update
+    echo -e "   \e[1;4;31mUpgrading your current version of DDEV... \e[0m"
+    # Upgrades the current version of DDEV.
+    brew upgrade ddev
+    echo -e "   \e[1;4;31mDDEV was upgraded in your system: \e[0m"
+    ddev version
+else
+    echo -e "   \e[1;4;31mThere wasn't detected a version of Brew installed in your sistem. \e[0m"
+    # Downloads and executes the DDEV basic installation script.
+    echo -e "   \e[1;4;31mProcessing the DDEV basic installation script...\e[0m"
+    curl -L https://raw.githubusercontent.com/drud/ddev/master/scripts/install_ddev.sh | bash
+    # Checks if DDEV is available now in your system.
+    echo -e "   \e[1;4;31mDDEV was installed in your system: \e[0m"
+    ddev version
+fi
