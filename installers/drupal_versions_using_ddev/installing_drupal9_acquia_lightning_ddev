@@ -15,11 +15,19 @@
 #-----------------------------------------------------------
 #
 
-mkdir PROJECTNAME
-cd PROJECTNAME
+varkeyname=$1
+mkdir $varkeyname
+cd $varkeyname
 ddev config --project-type=drupal9 --docroot=docroot--create-docroot
+cd .ddev
+wget https://raw.githubusercontent.com/davidjguru/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
+cd ..
 ddev start
 echo y | ddev composer create acquia/lightning-project
 ddev composer require drush/drush drupal/admin_toolbar drupal/console drupal/devel drupal/domain drupal/tmgmt 
 ddev start
-ddev exec drush si --site-name=PROJECT-NAME --account-name=admin --account-pass=admin -y
+ddev exec drush si --site-name=$varkeyname --account-name=admin --account-pass=admin -y
+ddev exec drush cr 
+ddev start 
+ddev launch
+ddev ssh

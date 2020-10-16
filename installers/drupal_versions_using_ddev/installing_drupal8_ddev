@@ -1,0 +1,32 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installing Drupal 8 based in Docker / Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: Drupal 8 Installer with DDEV
+# Description: Download and install a Drupal 8 codebase project inside a new environment based in docker - ddev. 
+#
+# davidjguru@solucionex.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+varkeyname=$1
+mkdir $varkeyname
+cd $varkeyname
+ddev config --project-type=drupal8 --docroot=web --create-docroot
+cd .ddev
+wget https://raw.githubusercontent.com/davidjguru/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
+cd ..
+ddev start
+echo y | ddev composer create drupal/recommended-project:^8.x
+ddev start
+ddev exec drush si --site-name=$varkeyname --account-name=admin --account-pass=admin -y
+ddev exec drush cr
+ddev start
+ddev launch
+ddev ssh

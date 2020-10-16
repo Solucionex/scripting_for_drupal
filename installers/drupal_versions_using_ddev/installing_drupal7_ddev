@@ -1,0 +1,25 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installing Drupal 7 based in Docker / Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: Drupal 7 Installer with DDEV
+# Description: Download and install a Drupal 7 codebase project inside a new environment based in docker - ddev. 
+#
+# davidjguru@solucionex.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+varkeyname=$1
+wget https://ftp.drupal.org/files/projects/drupal-7.73.tar.gz
+tar -xzvf drupal-7.73.tar.gz
+mv drupal-7.73 $varkeyname
+cd $varkeyname
+ddev config --project-type=drupal7
+ddev start
+ddev launch install.php
+
