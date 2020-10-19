@@ -15,18 +15,61 @@
 #-----------------------------------------------------------
 #
 
+# Gets initial name for new project and makes folder.
+echo -e "    \e[1;4;31mGetting the new project name...\e[0m"
 varkeyname=$1
 mkdir $varkeyname
+
+# Builds initial basic structure for DDEV deploy.
+echo -e "    \e[1;4;31mBuilding the basic structure for a new Drupal 9 installation...\e[0m"
 cd $varkeyname
 ddev config --project-type=drupal9 --docroot=web --create-docroot
 cd .ddev
+
+# Gets the Docker Compose file for Portainer in DDEV network.
+echo -e "    \e[1;4;31mDownloading Docker Compose file for Portainer...\e[0m"
 wget https://raw.githubusercontent.com/davidjguru/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
 cd ..
+
+# Inits the DDEV local deploy.
+echo -e "    \e[1;4;31mStarting up the new local deploy...\e[0m"
 ddev start
 echo y | ddev composer create drupal/recommended-project
+
+# Creates auxiliary folders.
+echo -e "    \e[1;4;31mCreating some new auxiliary folders...\e[0m"
+mkdir scripts backups docs
+cp ../installing_drupal9_ddev ./scripts/
+
+# Writes a new README file for project in root.
+echo -e "    \e[1;4;31mWriting a new README file for project...\e[0m"
+cat > README.md << EOF1
+# $varkeyname
+Welcome to the README file of the project $varkeyname.
+EOF1
 ddev start
+
+# Builds the new Drupal Site and clears cache.
+echo -e "    \e[1;4;31mBuilding the new Drupal 9 Site...\e[0m"
 ddev exec drush si --site-name=$varkeyname --account-name=admin --account-pass=admin -y
 ddev exec drush cr
+
+# Installs some Drupal contrib modules and resources.
+echo -e "    \e[1;4;31mInstalling resources like Drush, Drupal Console and many others contrib modules...\e[0m"
+ddev composer require drush/drush drupal/console drupal/admin_toolbar drupal/devel drupal/config_split drupal/config_update
+ddev exec drush en -y admin_toolbar 
+ddev exec drush en -y devel 
+ddev exec drush en -y webprofiler
+ddev exec drush en -y config_split
+ddev exec drush en -y config_update
+ddev exec drush cr
+
+# Exports an initial dump of the database file.
+echo -e "    \e[1;4;31mSaving the first database backup in /backups folder...\e[0m"
+ddev export-db --file=./backups/db_${varkeyname}_initial_.sql.gz
+
+# Restarts launchs in browser and connects the new deploy.
+echo -e "    \e[1;4;31mLaunching the new deploy...\e[0m"
 ddev start
 ddev launch
 ddev ssh
