@@ -16,33 +16,48 @@
 #
 
 # Gets initial name for new project and makes folder.
-echo -e "    \e[1;4;31mGetting the new project name...\e[0m"
+echo -e "    \e[1;4;31m1- Getting the new project name...\e[0m"
 varkeyname=$1
 mkdir $varkeyname
 
 # Builds initial basic structure for DDEV deploy.
-echo -e "    \e[1;4;31mBuilding the basic structure for a new Drupal 9 installation...\e[0m"
+echo -e "    \e[1;4;31m2- Building the basic structure for a new Drupal 9 installation...\e[0m"
 cd $varkeyname
 ddev config --project-type=drupal9 --docroot=web --create-docroot
 cd .ddev
 
 # Gets the Docker Compose file for Portainer in DDEV network.
-echo -e "    \e[1;4;31mDownloading Docker Compose file for Portainer...\e[0m"
+echo -e "    \e[1;4;31m3- Downloading Docker Compose file for Portainer...\e[0m"
 wget https://raw.githubusercontent.com/davidjguru/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
 cd ..
 
 # Inits the DDEV local deploy.
-echo -e "    \e[1;4;31mStarting up the new local deploy...\e[0m"
+echo -e "    \e[1;4;31m4- Starting up the new local deploy...\e[0m"
 ddev start
 echo y | ddev composer create drupal/recommended-project
 
 # Creates auxiliary folders.
-echo -e "    \e[1;4;31mCreating some new auxiliary folders...\e[0m"
+echo -e "    \e[1;4;31m5- Creating some new auxiliary folders...\e[0m"
 mkdir scripts backups docs
 cp ../installing_drupal9_ddev ./scripts/
 
+# Downloads and prepares libraries for Web Profile.
+echo -e "    \e[1;4;31m6- Putting JavaScript libraries in the right place...\e[0m"
+mkdir ./web/libraries
+mkdir ./web/libraries/d3
+ddev exec wget https://github.com/Solucionex/resources/archive/main.zip
+ddev exec unzip main.zip
+ddev exec cp -r ./resources-main/highlight ./libraries/
+ddev exec mv ./libraries/highlight ./libraries/highlightjs
+ddev exec chmod 775 -R ./libraries/highlightjs
+ddev exec rm -rf ./resources-main
+ddev exec wget https://d3js.org/d3.v3.min.js
+ddev exec mv d3.v3.min.js d3.min.js
+ddev exec mv d3.min.js ./libraries/d3/
+
+
 # Writes a new README file for project in root.
-echo -e "    \e[1;4;31mWriting a new README file for project...\e[0m"
+echo -e "    \e[1;4;31m7- Writing a new README file for project...\e[0m"
 cat > README.md << EOF1
 # $varkeyname
 Welcome to the README file of the project $varkeyname.
@@ -50,12 +65,12 @@ EOF1
 ddev start
 
 # Builds the new Drupal Site and clears cache.
-echo -e "    \e[1;4;31mBuilding the new Drupal 9 Site...\e[0m"
+echo -e "    \e[1;4;31m8- Building the new Drupal 9 Site...\e[0m"
 ddev exec drush si --site-name=$varkeyname --account-name=admin --account-pass=admin -y
 ddev exec drush cr
 
 # Installs some Drupal contrib modules and resources.
-echo -e "    \e[1;4;31mInstalling resources like Drush, Drupal Console and many others contrib modules...\e[0m"
+echo -e "    \e[1;4;31m9- Installing resources like Drush, Drupal Console and many others contrib modules...\e[0m"
 ddev composer require drush/drush drupal/console drupal/admin_toolbar drupal/devel drupal/config_split drupal/config_update
 ddev exec drush en -y admin_toolbar 
 ddev exec drush en -y devel 
@@ -64,12 +79,127 @@ ddev exec drush en -y config_split
 ddev exec drush en -y config_update
 ddev exec drush cr
 
+# Enables subtheming in the Drupal installation.
+echo -e "    \e[1;4;31m10- Enabling folders for subtheming... \e[0m"
+ddev exec mkdir /var/www/html/web/themes/custom
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/js
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/css
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/less
+ddev exec mkdir /var/www/html/web/themes/custom/custom_subtheme/templates
+ddev exec cp /var/www/html/web/core/themes/bartik/logo.svg /var/www/html/web/themes/custom/custom_subtheme/
+
+# Creates the custom subtheme basic scaffolding.
+echo -e "    \e[1;4;31m11- Creating the info.yml file for subtheme... \e[0m"
+ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF1
+name: Custom Drupal Subtheme
+type: theme 
+description: 'This is a custom Drupal Subtheme'
+core: 8.x
+core_version_requirement: ^8 || ^9
+# Father theme
+base theme: bartik
+# Library definition
+libraries:
+  - custom_subtheme/global-styling
+  - custom_subtheme/global-scripts
+EOF1
+  
+# Creates the libraries declaration.
+echo -e "    \e[1;4;31m12- Doing the libraries declaration file for subtheme... \e[0m"
+ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF2
+global-styling:
+  version: 1.x 
+  css:
+    theme:
+      css/custom_subtheme.css: {} 
+global-scripts:
+  version: 1.x 
+  js:
+    js/custom_subtheme.js: {}
+  dependencies:   
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+EOF2
+
+# Builds the initial JavaScript file.
+echo -e "    \e[1;4;31m13- Builds an initial JavaScript file for subtheme... \e[0m"
+ddev exec cat > web/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF3
+/**
+ * @file Main JS file for the theme.
+ */
+(function ($, Drupal){
+  console.log('hi');
+})(jQuery, Drupal);
+EOF3
+
+## Creates an initial empty file for CSS styling.
+echo -e "    \e[1;4;31m14- Saving an initial empty file for CSS.. \e[0m"
+touch web/themes/custom/custom_subtheme/css/custom_subtheme.css
+
+## Put the Drupal instalation in dev mode turning off the cache system and enabling TWIG debug.
+echo -e "    \e[1;4;31m15- Passing the Drupal installation to dev mode... \e[0m"
+ddev exec cat > web/sites/default/services.yml << EOF4
+parameters:
+  session.storage.options:
+    gc_probability: 1
+    gc_divisor: 100
+    gc_maxlifetime: 200000
+    cookie_lifetime: 2000000
+  twig.config:
+    debug: true
+    auto_reload: true
+    cache: false
+  renderer.config:
+    required_cache_contexts: ['languages:language_interface', 'theme', 'user.permissions']
+    auto_placeholder_conditions:
+      max-age: 0
+      contexts: ['session', 'user']
+      tags: []
+  http.response.debug_cacheability_headers: false
+  factory.keyvalue:
+    {}
+  factory.keyvalue.expirable:
+    {}
+  filter_protocols:
+    - http
+    - https
+    - ftp
+    - news
+    - nntp
+    - tel
+    - telnet
+    - mailto
+    - irc
+    - ssh
+    - sftp
+    - webcal
+    - rtsp
+  cors.config:
+    enabled: false
+    allowedHeaders: []
+    allowedMethods: []
+    allowedOrigins: ['*']
+    exposedHeaders: false
+    maxAge: false
+    supportsCredentials: false
+EOF4
+
+# Install and enable subtheme.
+echo -e "    \e[1;4;31m16- Enabling subtheme as default active theme... \e[0m"
+ddev exec drush then custom_subtheme
+ddev exec drush config-set -y system.theme default custom_subtheme
+ddev exec drush cr
+
+
 # Exports an initial dump of the database file.
-echo -e "    \e[1;4;31mSaving the first database backup in /backups folder...\e[0m"
+echo -e "    \e[1;4;31m17- Saving the first database backup in /backups folder...\e[0m"
 ddev export-db --file=./backups/db_${varkeyname}_initial_.sql.gz
 
 # Restarts launchs in browser and connects the new deploy.
-echo -e "    \e[1;4;31mLaunching the new deploy...\e[0m"
+echo -e "    \e[1;4;31m18- Launching the new deploy...\e[0m"
 ddev start
 ddev launch
 ddev ssh
