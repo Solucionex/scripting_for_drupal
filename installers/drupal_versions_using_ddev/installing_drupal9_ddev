@@ -55,7 +55,6 @@ ddev exec wget https://d3js.org/d3.v3.min.js
 ddev exec mv d3.v3.min.js d3.min.js
 ddev exec mv d3.min.js ./libraries/d3/
 
-
 # Writes a new README file for project in root.
 echo -e "    \e[1;4;31m7- Writing a new README file for project...\e[0m"
 cat > README.md << EOF1
@@ -192,7 +191,6 @@ echo -e "    \e[1;4;31m16- Enabling subtheme as default active theme... \e[0m"
 ddev exec drush then custom_subtheme
 ddev exec drush config-set -y system.theme default custom_subtheme
 ddev exec drush cr
-
 
 # Exports an initial dump of the database file.
 echo -e "    \e[1;4;31m17- Saving the first database backup in /backups folder...\e[0m"
