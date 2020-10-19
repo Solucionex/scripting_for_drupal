@@ -70,12 +70,25 @@ ddev exec drush cr
 
 # Installs some Drupal contrib modules and resources.
 echo -e "    \e[1;4;31m9- Installing resources like Drush, Drupal Console and many others contrib modules...\e[0m"
-ddev composer require drush/drush drupal/console drupal/admin_toolbar drupal/devel drupal/config_split drupal/config_update
+## CLIs.
+ddev composer require drush/drush drupal/console 
+## Basic contrib modules.
+ddev composer require drupal/admin_toolbar drupal/devel 
+## Config related modules.
+ddev composer require drupal/config_split drupal/config_update
+## Layout and content related modules.
+ddev composer require drupal/paragraphs drupal/classy_paragraphs drupal/entity_reference_revisions
+## Enabling step by step in order to avoid global errors.
 ddev exec drush en -y admin_toolbar 
 ddev exec drush en -y devel 
 ddev exec drush en -y webprofiler
 ddev exec drush en -y config_split
 ddev exec drush en -y config_update
+ddev exec drush en -y paragraphs 
+ddev exec drush en -y classy_paragraphs
+ddev exec drush en -y entity_reference_revisions
+ddev exec drush en -y entity_reference
+ddev exec drush en -y layout_builder
 ddev exec drush cr
 
 # Enables subtheming in the Drupal installation.
@@ -94,7 +107,6 @@ ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.info.yml << EO
 name: Custom Drupal Subtheme
 type: theme 
 description: 'This is a custom Drupal Subtheme'
-core: 8.x
 core_version_requirement: ^8 || ^9
 # Father theme
 base theme: bartik
