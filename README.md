@@ -45,30 +45,32 @@ In this folder (/installers), you will find some resources in order to launch a 
     * Installs and enables new subtheme using Drush.
     * Launch the Drupal installation through the default browser.
     
- * **/installers/drupal_versions_using_ddev/** Main folder with a family of installation scripts for deploy local Drupal installations with different versions (Drupal 7, Drupal 8, Drupal 9 and Drupal 9 using Acquia Lightning version). This scripts covers all the steps when you already are in a Debian / Ubuntu System and have Docker, Docker-Compose and DDEV working locally. Use the scripts just in these scenarios.  
- * **installing_drupal9_ddev** This is our main script (right now), is a processing bash script to deploy a whole Drupal 9 site ready to Work. Just download, move to your workspace directory, giving permissions to the file with ```chmod +x installing_drupal9_ddev``` and launching it with a new project name as parameter, just do:  
+ ### /installers/drupal_versions_using_ddev/
+ Main folder with a family of installation scripts for deploy local Drupal installations with different versions (Drupal 7, Drupal 8, Drupal 9 and Drupal 9 using Acquia Lightning version). This scripts covers all the steps when you already are in a Debian / Ubuntu System and have Docker, Docker-Compose and DDEV working locally. Use the scripts just in these scenarios.    
+ 
+ * **installing_drupal9_ddev** This is our main script (right now), is a processing bash script to deploy a whole Drupal 9 site ready to Work. Just download, move to your workspace directory, giving permissions to the file with ```chmod +x installing_drupal9_ddev``` and launching it with a new project name as parameter, just do:   
  
  ```bash
  $ cd workspace
  $ chmod + x installing_drupal9_ddev
  $ ./installing_drupal9_ddev projectname
  ```
- See the actions contained in the script:  
-   > Features:
-     * Gets initial name for new project and makes folder.
-     * Builds initial basic structure for DDEV deploy.
-     * Gets the Docker Compose file for Portainer in DDEV network (from https://github.com/davidjguru/ddev-contrib/tree/master/docker-compose-services/portainer). 
-     * Inits the DDEV local deploy using ```ddev composer create```.
-     * Creates auxiliary folders: /scripts, /docs, /backups, /config/sync.
-     * Downloads and prepares JavaScript libraries for Web Profile (d3, highlight).
-     * Changes the location of the config/sync folder using a new custom settings.local.php
-     * Writes a new README file for project in root.
-     * Builds the new Drupal Site and clears cache.
-     * Installs some Drupal contrib modules and resources.
-     * Creates a new custom subtheme derivative from Bartik (with basic files, CSS and JavaScript) and enables it in the Drupal installation.
-     * Puts the Drupal installation in dev mode turning off the cache system and enabling TWIG debug.
-     * Exports an initial dump of the database file and the config files.
-     * Restarts, launchs in browser and connects the new deploy.
- * **installing_drupal9_acquia_lightning_ddev** Same as former but using Acquia Lightning as base. 
- * **installing_drupal8_ddev** Same as the first script but for a Drupal 8 core version. 
- * **installing_drupal7_ddev** Just a very, very basic script for Drupal 7 installation. 
+ See the actions contained in the script:   
+   > Features:  
+     * Gets initial name for new project and makes folder.  
+     * Builds initial basic structure for DDEV deploy.  
+     * Gets the Docker Compose file for Portainer in DDEV network (from https://github.com/davidjguru/ddev-contrib/tree/master/docker-compose-services/portainer).   
+     * Inits the DDEV local deploy using ```ddev composer create```.  
+     * Creates auxiliary folders: /scripts, /docs, /backups, /config/sync.  
+     * Downloads and prepares JavaScript libraries for Web Profile (d3, highlight).  
+     * Changes the location of the config/sync folder using a new custom settings.local.php  
+     * Writes a new README file for project in root.  
+     * Builds the new Drupal Site and clears cache.  
+     * Installs some Drupal contrib modules and resources.  
+     * Creates a new custom subtheme derivative from Bartik (with basic files, CSS and JavaScript) and enables it in the Drupal installation.  
+     * Puts the Drupal installation in dev mode turning off the cache system and enabling TWIG debug.  
+     * Exports an initial dump of the database file and the config files.  
+     * Restarts, launchs in browser and connects the new deploy.  
+ * **installing_drupal9_acquia_lightning_ddev** Same as former but using Acquia Lightning as base.   
+ * **installing_drupal8_ddev** Same as the first script but for a Drupal 8 core version.   
+ * **installing_drupal7_ddev** Just a very, very basic script for Drupal 7 installation.   
