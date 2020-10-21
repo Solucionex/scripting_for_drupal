@@ -28,7 +28,7 @@ cd .ddev
 
 # Gets the Docker Compose file for Portainer in DDEV network.
 echo -e "    \e[1;4;31m3- Downloading Docker Compose file for Portainer...\e[0m"
-wget https://raw.githubusercontent.com/davidjguru/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
+wget https://raw.githubusercontent.com/drud/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
 cd ..
 
 # Inits the DDEV local deploy.
