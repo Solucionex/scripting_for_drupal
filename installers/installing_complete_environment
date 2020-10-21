@@ -125,8 +125,8 @@ sudo apt install -y build-essential apt-transport-https ca-certificates jq curl 
 echo -e "   \e[1;4;31mInstalling Docker... \e[0m"
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io
 
 # Enables Docker.
 echo -e "   \e[1;4;31mEnabling Docker Engine...\e[0m"
