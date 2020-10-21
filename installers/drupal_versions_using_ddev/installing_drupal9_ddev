@@ -107,7 +107,7 @@ ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entit
 ## Config related modules.
 ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC
 ## Layout and content related modules.
-ddev composer require drupal/paragraphs drupal/classy_paragraphs drupal/entity_reference_revisions
+ddev composer require drupal/bootstrap_layout_builder:^2.0@beta drupal/paragraphs drupal/classy_paragraphs drupal/entity_reference_revisions
 ## Enabling step by step in order to avoid global errors.
 ddev exec drush en -y admin_toolbar 
 ddev exec drush en -y devel 
@@ -122,6 +122,7 @@ ddev exec drush en -y classy_paragraphs
 ddev exec drush en -y entity_reference_revisions
 ddev exec drush en -y entity_reference
 ddev exec drush en -y layout_builder
+ddev exec drush en -y bootstrap_layout_builder
 ddev exec drush cr
 
 # Enables subtheming in the Drupal installation.
