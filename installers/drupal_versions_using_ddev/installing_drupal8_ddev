@@ -103,20 +103,23 @@ echo -e "    \e[1;4;31m10- Installing resources like Drush, Drupal Console and m
 ## CLIs.
 ddev composer require --dev drush/drush drupal/console 
 ## Basic contrib modules.
-ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entity_update
+ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entity_updates drupal/coffee
 ## Config related modules.
-ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC
+ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto
 ## Layout and content related modules.
 ddev composer require drupal/paragraphs drupal/classy_paragraphs drupal/entity_reference_revisions
 ## Enabling step by step in order to avoid global errors.
 ddev exec drush en -y admin_toolbar 
+ddev exec drush en -y admin_toolbar_tools
 ddev exec drush en -y devel 
 ddev exec drush en -y webprofiler
-ddev exec drush en -y devel_entity_update
+ddev exec drush en -y devel_entity_updates
+ddev exec drush en -y coffee
 ddev exec drush en -y config_split
 ddev exec drush en -y config_update
 ddev exec drush en -y config_update_ui
 ddev exec drush en -y config_import
+ddev exec drush en -y pathauto
 ddev exec drush en -y paragraphs 
 ddev exec drush en -y classy_paragraphs
 ddev exec drush en -y entity_reference_revisions
