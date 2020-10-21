@@ -119,12 +119,14 @@ sudo apt  update
 
 # Installs some basic resources in your System (Ubuntu).
 echo -e "   \e[1;4;31mInstalling some basic resources for your system: \e[0m"
-sudo apt install -y build-essential apt-transport-https ca-certificates jq curl software-properties-common file git
+sudo apt install -y build-essential apt-transport-https ca-certificates jq curl software-properties-common file git  gnupg-agent
 
 # Installs Docker.
 echo -e "   \e[1;4;31mInstalling Docker... \e[0m"
-sudo apt install -y containerd
-sudo apt install -y docker.io
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # Enables Docker.
 echo -e "   \e[1;4;31mEnabling Docker Engine...\e[0m"
