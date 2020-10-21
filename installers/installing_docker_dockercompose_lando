@@ -1,0 +1,39 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installs Docker, Docker-Compose and Lando in Ubuntu.
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: installing_docker_dockercompose_lando
+# Description: Installs the last available versions for Docker, Docker-Compose and Lando. 
+#
+# davidjguru@gmail.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+## Update the list of packages.
+echo -e "   \e[1;4;31mUpdate the package list...\e[0m"
+sudo apt  update
+
+# Installs some basic resources in your System (Ubuntu).
+echo -e "   \e[1;4;31mInstalling some basic resources for your system...\e[0m"
+sudo apt install -y build-essential apt-transport-https ca-certificates jq curl software-properties-common file git  gnupg-agent
+
+# Sets the Docker official repository. 
+echo -e "   \e[1;4;31mSetting the Docker repository...\e[0m"
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+
+# Installs the Docker basic packages.
+echo -e "   \e[1;4;31mInstalling sthe Docker related packages...\e[0m"
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+# Downloads and executes the Lando .deb package.
+echo -e "   \e[1;4;31mDownloading and installing Lando package...\e[0m"
+wget https://files.devwithlando.io/lando-stable.deb
+sudo dpkg -i lando-stable.deb
