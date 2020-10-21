@@ -6,7 +6,7 @@
 # 
 # Installs Docker, Docker-Compose and DDEV in Ubuntu.
 # [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
-# Title: enabling_subtheming
+# Title: installing_docker_dockercompose_ddev
 # Description: Installs the last available versions for Docker, Docker-Compose and DDEV. 
 #
 # davidjguru@gmail.com
