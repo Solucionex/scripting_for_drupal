@@ -86,8 +86,7 @@ ddev exec drush si varbase --yes --site-name=$varkeyname --account-name=admin --
 ddev exec drush cr
 
 # Installs some Drupal contrib modules and resources.
-echo -e "    \e[1;4;31m10- Installing resources like Drupal Console and some contrib modules...\e[0m"
-ddev composer require --dev drupal/console 
+echo -e "    \e[1;4;31m10- Installing resources like some contrib modules...\e[0m"
 ddev exec drush en -y devel webprofiler
 
 # Exports an initial dump of the database file and the config files.
