@@ -1,0 +1,102 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installing a Varbase whole distro based in Drupal 9 core using Docker / Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: Varbase with Drupal 9 Installer with DDEV
+# Description: Downloads and installs a whole Varbase installation for Drupal 9 under docker - ddev. 
+#
+# davidjguru@solucionex.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+# Gets initial name for new project and makes folder.
+echo -e "    \e[1;4;31m1- Getting the new project name...\e[0m"
+varkeyname=$1
+mkdir $varkeyname
+
+# Builds initial basic structure for DDEV deploy.
+echo -e "    \e[1;4;31m2- Building the basic structure for a new Drupal 9 installation...\e[0m"
+cd $varkeyname
+ddev config --project-type=drupal9 --docroot=docroot --create-docroot
+cd .ddev
+
+# Gets the Docker Compose file for Portainer in DDEV network.
+echo -e "    \e[1;4;31m3- Downloading Docker Compose file for Portainer...\e[0m"
+wget https://raw.githubusercontent.com/drud/ddev-contrib/master/docker-compose-services/portainer/docker-compose.portainer.yaml
+cd ..
+
+# Inits the DDEV local deploy.
+echo -e "    \e[1;4;31m4- Starting up the new local deploy...\e[0m"
+ddev start
+echo y | ddev composer create Vardot/varbase-project:9.0.0-alpha1 
+
+# Creates auxiliary folders.
+echo -e "    \e[1;4;31m5- Creating some new auxiliary folders...\e[0m"
+mkdir -p scripts backups docs config/sync
+cp ../installing_drupal9_varbase_ddev ./scripts/
+
+# Changes the location of the config/sync folder.
+echo -e "    \e[1;4;31m7- Changing the default location for config files from settings.php...\e[0m"
+ddev exec cat >> docroot/sites/default/settings.local.php << EOF1
+<?php
+
+/**
+ * @file
+ * #custom-generated: Automatically generated Drupal settings file for local environments.
+ */
+
+// This specifies the default configuration sync directory.
+if (defined('CONFIG_SYNC_DIRECTORY') && empty(\$config_directories[CONFIG_SYNC_DIRECTORY])) {
+  \$config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
+}
+elseif (empty($settings['config_sync_directory'])) {
+  \$settings['config_sync_directory'] = '../config/sync';
+}
+
+  \$settings['config_sync_directory'] = '../config/sync';
+
+EOF1
+
+ddev exec cat >> docroot/sites/default/settings.php << EOF2
+
+// Local customization: Loads the settings.local below the settings.ddev default file.
+if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php') && getenv('IS_DDEV_PROJECT') == 'true') {
+  include \$app_root . '/' . \$site_path . '/settings.local.php';
+}
+EOF2
+
+# Writes a new README file for project in root and delete Lando vestigial file.
+echo -e "    \e[1;4;31m8- Writing a new README file for project...\e[0m"
+cat > README.md << EOF3
+# $varkeyname
+Welcome to the README file of the project $varkeyname.
+EOF3
+ddev exec rm .lando.yml
+ddev start
+
+# Builds the new Drupal Site and clears cache.
+echo -e "    \e[1;4;31m9- Building the new Varbase Site...\e[0m"
+ddev exec drush si varbase --yes --site-name=$varkeyname --account-name=admin --account-pass=admin --account-mail=admin@admin.es varbase_multilingual_configuration.enable_multilingual=true varbase_extra_components.vmi=true varbase_extra_components.varbase_heroslider_media=true varbase_extra_components.varbase_carousels=true varbase_extra_components.varbase_search=true varbase_development_tools.varbase_development=true
+ddev exec drush cr
+
+# Installs some Drupal contrib modules and resources.
+echo -e "    \e[1;4;31m10- Installing resources like Drupal Console and some contrib modules...\e[0m"
+ddev composer require --dev drupal/console 
+ddev exec drush en -y devel webprofiler
+
+# Exports an initial dump of the database file and the config files.
+echo -e "    \e[1;4;31m11- Saving the first database backup and config files...\e[0m"
+ddev export-db --file=./backups/db_${varkeyname}_initial_.sql.gz
+ddev exec drush cex --yes
+
+# Restarts launchs in browser and connects the new deploy.
+echo -e "    \e[1;4;31m12- Launching the new deploy...\e[0m"
+ddev start
+ddev launch
+ddev ssh
