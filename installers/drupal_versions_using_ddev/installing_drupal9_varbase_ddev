@@ -82,10 +82,10 @@ ddev start
 
 # Builds the new Drupal Site clears cache and delete Lando vestigial file.
 echo -e "    \e[1;4;31m8- Building the new Varbase Site...\e[0m"
-# ddev composer require --dev drupal/console
 ddev exec drush si varbase --yes --site-name=$varkeyname --account-name=admin --account-pass=admin --account-mail=admin@admin.es varbase_multilingual_configuration.enable_multilingual=true varbase_extra_components.vmi=true varbase_extra_components.varbase_heroslider_media=true varbase_extra_components.varbase_carousels=true varbase_extra_components.varbase_search=true varbase_development_tools.varbase_development=true
 ddev exec drush cr
 ddev exec rm ../.lando.yml
+ddev exec mkdir modules/custom
 
 # Installs Drupal contrib modules.
 echo -e "    \e[1;4;31m9- Installing resources like some contrib modules...\e[0m"
