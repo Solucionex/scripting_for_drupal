@@ -103,30 +103,35 @@ echo -e "    \e[1;4;31m10- Installing resources like Drush, Drupal Console and m
 ## CLIs.
 ddev composer require --dev drush/drush drupal/console 
 ## Basic contrib modules.
-ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entity_updates drupal/coffee
+ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entity_updates:^3.0 drupal/coffee
 ## Config related modules.
-ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto
+ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto 
+ddev composer require drupal/menu_admin_per_menu drupal/total_control drupal/search_api drupal/taxonomy_access_fix
 ## Layout and content related modules.
-ddev composer require drupal/paragraphs drupal/classy_paragraphs drupal/entity_reference_revisions
-## Language and translation resource.
+ddev composer require drupal/bootstrap_layout_builder:^2.0@beta drupal/paragraphs drupal/classy_paragraphs
+ddev composer require drupal/entity_reference_revisions drupal/ds drupal/ds_extras drupal/metatag
+## Spam control.
+ddev composer require drupal/honeypot drupal/captcha drupal/recaptcha
+## Webform family.
+ddev composer require drupal/webform:^6.0@alpha drupal/webform_views:^5.0@alpha
+## Views related modules.
+ddev composer require drupal/better_exposed_filters drupal/views_bootstrap drupal/views_bulk_operations:^3.9
+ddev composer require drupal/views_infinite_scroll drupal/viewsreference:^2.0@beta 
+## Users resources.
+ddev composer require drupal/login_destination:^2.0@alpha drupal/config_perms:^2.0
+## Language and translations resources.
  ddev composer require drupal/domain drupal/tmgmt 
 ## Enabling step by step in order to avoid global errors.
-ddev exec drush en -y admin_toolbar
-ddev exec drush en -y admin_toolbar_tools
-ddev exec drush en -y devel 
-ddev exec drush en -y devel_entity_updates
-ddev exec drush en -y coffee
-ddev exec drush en -y webprofiler
-ddev exec drush en -y config_split
-ddev exec drush en -y config_update
-ddev exec drush en -y config_update_ui
-ddev exec drush en -y config_import
-ddev exec drush en -y pathauto
-ddev exec drush en -y paragraphs 
-ddev exec drush en -y classy_paragraphs
-ddev exec drush en -y entity_reference_revisions
-ddev exec drush en -y entity_reference
-ddev exec drush en -y layout_builder
+ddev exec drush en -y admin_toolbar admin_toolbar_tools admin_toolbar_links_access_filter
+ddev exec drush en -y devel webprofiler devel_entity_updates coffee
+ddev exec drush en -y pathauto menu_admin_per_menu total_control search_api search_api_db taxonomy_access_fix
+ddev exec drush en -y config_split config_update config_update_ui config_import
+ddev exec drush en -y paragraphs classy_paragraphs entity_reference_revisions entity_reference ds ds_extras metatag
+ddev exec drush en -y layout_builder bootstrap_layout_builder
+ddev exec drush en -y captcha honeypot recaptcha
+ddev exec drush en -y webform webform_ui webform_views webform_templates webform_bootstrap
+ddev exec drush en -y better_exposed_filters views_bootstrap views_bulk_operations views_infinite_scroll viewsreference
+ddev exec drush en -y login_destination config_perms
 ddev exec drush en -y domain 
 ddev exec drush en -y domain_access,
 ddev exec drush en -y domain_alias,
