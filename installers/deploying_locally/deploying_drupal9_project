@@ -1,0 +1,38 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Building locally a Drupal project based in Docker / Docker Compose / DDEV 
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: Drupal local Install with DDEV
+# Description: Local deploy of a remote Drupal project managed by control version and based in docker - ddev. 
+#
+# davidjguru@solucionex.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+# Gets the codebase from remote repo.
+echo -e "    \e[1;4;31m1- Getting the code base from remote repository...\e[0m"
+echo -e "    \e[1;4;31m2- Please, ensure if you have SSH credentials load in the remote repo ;-) ...\e[0m"
+varkeyname=$1
+git clone $varkeyname && cd $(basename $_ .git)
+
+# Launchs Composer Install in order to build the whole Codebase.
+echo -e "    \e[1;4;31m3- Launching Composer install for dependencies...\e[0m"
+ddev composer install
+
+# Loads the last database dump file in database container.
+echo -e "    \e[1;4;31m34- Loading the last database dump file...\e[0m"
+cd ./backups/
+latest_dump=$(ls -t | head -n 1)
+cd ..
+ddev import-db --src=backups/$latest_dump
+
+# Open the deployed project in browser.
+echo -e "    \e[1;4;31m5- Restarting the container network, see your browser...\e[0m"
+ddev restart
+ddev launch
