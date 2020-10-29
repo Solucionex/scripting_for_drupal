@@ -25,6 +25,10 @@ echo -e "    \e[1;4;31m2- Building the basic structure for a new Drupal 9 instal
 cd $varkeyname
 ddev config --project-type=drupal9 --docroot=web --create-docroot
 cd .ddev
+rm config.yaml
+wget https://raw.githubusercontent.com/Solucionex/resources/main/ddevconfig/config.yaml
+sed -i "/name:/c\name: $varkeyname" config.yaml
+
 
 # Gets the Docker Compose file for Portainer in DDEV network.
 echo -e "    \e[1;4;31m3- Downloading Docker Compose file for Portainer...\e[0m"
@@ -39,7 +43,7 @@ echo y | ddev composer create drupal/recommended-project
 # Creates auxiliary folders.
 echo -e "    \e[1;4;31m5- Creating some new auxiliary folders...\e[0m"
 mkdir -p scripts backups docs config/sync
-cp ../installing_drupal9_ddev ./scripts/
+cp ../installing_drupal9_custom_varbase_ddev ./scripts/
 
 # Downloads and prepares libraries for Web Profile.
 echo -e "    \e[1;4;31m6- Putting JavaScript libraries in the right place...\e[0m"
@@ -105,11 +109,14 @@ ddev composer require --dev drush/drush drupal/console
 ## Basic contrib modules.
 ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entity_updates:^3.0 drupal/coffee
 ## Config related modules.
-ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto 
+ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto drupal/block_class
 ddev composer require drupal/menu_admin_per_menu drupal/total_control drupal/search_api drupal/taxonomy_access_fix
 ## Layout and content related modules.
 ddev composer require drupal/bootstrap_layout_builder:^2.0@beta drupal/paragraphs drupal/classy_paragraphs
 ddev composer require drupal/entity_reference_revisions drupal/ds drupal/ds_extras drupal/metatag
+ddev composer require drupal/social_links:^3.0 drupal/field_formatter:^3.0@alpha drupal/eu_cookie_compliance 
+ddev composer require drupal/google_analytics drupal/layout_builder_styles drupal/components:^2.0@beta 
+ddev composer require drupal/simple_sitemap drupal/addtoany
 ## Spam control.
 ddev composer require drupal/honeypot drupal/captcha drupal/recaptcha
 ## Webform family.
@@ -119,17 +126,25 @@ ddev composer require drupal/better_exposed_filters drupal/views_bootstrap drupa
 ddev composer require drupal/views_infinite_scroll drupal/viewsreference:^2.0@beta 
 ## Users resources.
 ddev composer require drupal/login_destination:^2.0@alpha drupal/config_perms:^2.0
+## Varbase related.
+ddev composer require drupal/varbase_layout_builder:^9.0 drupal/varbase_bootstrap_paragraphs:^9.0
 ## Enabling step by step in order to avoid global errors.
 ddev exec drush en -y admin_toolbar admin_toolbar_tools admin_toolbar_links_access_filter
 ddev exec drush en -y devel webprofiler devel_entity_updates coffee
-ddev exec drush en -y pathauto menu_admin_per_menu total_control search_api search_api_db taxonomy_access_fix
+ddev exec drush en -y pathauto 
+ddev exec drush en -y menu_admin_per_menu 
+ddev exec drush en -y total_control
+ddev exec drush en -y taxonomy_access_fix 
+ddev exec drush en -y block_class
 ddev exec drush en -y config_split config_update config_update_ui config_import
 ddev exec drush en -y paragraphs classy_paragraphs entity_reference_revisions entity_reference ds ds_extras metatag
-ddev exec drush en -y layout_builder bootstrap_layout_builder
-ddev exec drush en -y captcha honeypot recaptcha
+ddev exec drush en -y layout_builder bootstrap_layout_builder layout_builder_styles
+ddev exec drush en -y captcha honeypot recaptcha field_formatter 
 ddev exec drush en -y webform webform_ui webform_views webform_templates webform_bootstrap
 ddev exec drush en -y better_exposed_filters views_bootstrap views_bulk_operations views_infinite_scroll viewsreference
-ddev exec drush en -y login_destination config_perms 
+ddev exec drush en -y login_destination config_perms eu_cookie_compliance google_analytics layout_builder_styles
+ddev exec drush en -y components simple_sitemap social_links addtoany metatag
+ddev exec drush en -y varbase_layout_builder varbase_bootstrap_paragraphs 
 ddev exec drush cr
 
 
@@ -248,7 +263,8 @@ ddev exec drush cr
 
 # Exports an initial dump of the database file and the config files.
 echo -e "    \e[1;4;31m18- Saving the first database backup and config files...\e[0m"
-ddev export-db --file=./backups/db_${varkeyname}_initial_.sql.gz
+currentdate=$(date +"%Y-%m-%d")
+ddev export-db --file=./backups/db_${varkeyname}_initial_.$currentdate.sql.gz
 ddev exec drush cex --yes
 
 # Restarts launchs in browser and connects the new deploy.

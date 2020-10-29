@@ -25,6 +25,9 @@ echo -e "    \e[1;4;31m2- Building the basic structure for a new Drupal 8 instal
 cd $varkeyname
 ddev config --project-type=drupal8 --docroot=web --create-docroot
 cd .ddev
+rm config.yaml
+wget https://raw.githubusercontent.com/Solucionex/resources/main/ddevconfig/config.yaml
+sed -i "/name:/c\name: $varkeyname" config.yaml
 
 # Gets the Docker Compose file for Portainer in DDEV network.
 echo -e "    \e[1;4;31m3- Downloading Docker Compose file for Portainer...\e[0m"
