@@ -170,7 +170,7 @@ ddev exec cp /var/www/html/docroot/core/themes/bartik/logo.svg /var/www/html/doc
 
 # Creates the custom subtheme basic scaffolding.
 echo -e "    \e[1;4;31m12- Creating the info.yml file for subtheme... \e[0m"
-ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF1
+ddev exec cat > docroot/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF1
 name: Custom Drupal Subtheme
 type: theme 
 description: 'This is a custom Drupal Subtheme'
@@ -185,7 +185,7 @@ EOF1
   
 # Creates the libraries declaration.
 echo -e "    \e[1;4;31m13- Doing the libraries declaration file for subtheme... \e[0m"
-ddev exec cat > web/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF2
+ddev exec cat > docroot/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF2
 global-styling:
   version: 1.x 
   css:
@@ -204,7 +204,7 @@ EOF2
 
 # Builds the initial JavaScript file.
 echo -e "    \e[1;4;31m14- Builds an initial JavaScript file for subtheme... \e[0m"
-ddev exec cat > web/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF3
+ddev exec cat > docroot/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF3
 /**
  * @file Main JS file for the theme.
  */
@@ -215,11 +215,11 @@ EOF3
 
 ## Creates an initial empty file for CSS styling.
 echo -e "    \e[1;4;31m15- Saving an initial empty file for CSS.. \e[0m"
-touch web/themes/custom/custom_subtheme/css/custom_subtheme.css
+touch docroot/themes/custom/custom_subtheme/css/custom_subtheme.css
 
 ## Put the Drupal instalation in dev mode turning off the cache system and enabling TWIG debug.
 echo -e "    \e[1;4;31m16- Passing the Drupal installation to dev mode... \e[0m"
-ddev exec cat > web/sites/default/services.yml << EOF4
+ddev exec cat > docroot/sites/default/services.yml << EOF4
 parameters:
   session.storage.options:
     gc_probability: 1
