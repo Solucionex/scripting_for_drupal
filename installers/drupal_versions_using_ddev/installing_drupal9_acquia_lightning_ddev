@@ -109,7 +109,7 @@ ddev composer require --dev drush/drush drupal/console
 ## Basic contrib modules.
 ddev composer require --dev drupal/admin_toolbar drupal/devel drupal/devel_entity_updates:^3.0 drupal/coffee
 ## Config related modules.
-ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto 
+ddev composer require drupal/config_split drupal/config_update drupal/confi:^2.0@RC drupal/pathauto drupal/eu_cookie_compliance
 ddev composer require drupal/menu_admin_per_menu drupal/total_control drupal/search_api drupal/taxonomy_access_fix
 ## Layout and content related modules.
 ddev composer require drupal/bootstrap_layout_builder:^2.0@beta drupal/paragraphs drupal/classy_paragraphs
@@ -135,7 +135,7 @@ ddev exec drush en -y layout_builder bootstrap_layout_builder
 ddev exec drush en -y captcha honeypot recaptcha
 ddev exec drush en -y webform webform_ui webform_views webform_templates webform_bootstrap
 ddev exec drush en -y better_exposed_filters views_bootstrap views_bulk_operations views_infinite_scroll viewsreference
-ddev exec drush en -y login_destination config_perms
+ddev exec drush en -y login_destination config_perms eu_cookie_compliance
 ddev exec drush en -y domain 
 ddev exec drush en -y domain_access,
 ddev exec drush en -y domain_alias,
@@ -153,7 +153,7 @@ ddev exec drush en -y tmgmt_language_combination,
 ddev exec drush en -y tmgmt_locale,
 ddev exec drush en -y tmgmt_file,
 ddev exec drush en -y tmgmt_local,
-ddev exec drush en -y mgmt_content,
+ddev exec drush en -y tmgmt_content,
 ddev exec drush en -y tmgmt_config
 ddev exec drush en -y tmgmt
 ddev exec drush cr
@@ -271,12 +271,20 @@ ddev exec drush then custom_subtheme
 ddev exec drush config-set -y system.theme default custom_subtheme
 ddev exec drush cr
 
-# Exports an initial dump of the database file.
-echo -e "    \e[1;4;31m18- Saving the first database backup in /backups folder...\e[0m"
-ddev export-db --file=./backups/db_${varkeyname}_initial_.sql.gz
+# Creates the main custom .gitignore for project.
+echo -e "    \e[1;4;31m18- Downloading the main custom gitignore file...\e[0m"
+wget https://github.com/Solucionex/resources/blob/main/gitignores/drupal9_lightning_gitignore
+mv drupal9_lightning_gitignore .gitignore
+
+# Exports an initial dump of the database and the config files.
+echo -e "    \e[1;4;31m19- Saving the first database backup and config files...\e[0m"
+date=$(date +"%Y-%m-%d")
+ddev export-db --file=./backups/db_${varkeyname}_initial_$date.sql.gz
+ddev exec drush cex --yes
+git init
 
 # Restarts launchs in browser and connects the new deploy.
-echo -e "    \e[1;4;31m19- Launching the new deploy...\e[0m"
+echo -e "    \e[1;4;31m20- Launching the new deploy...\e[0m"
 ddev start
 ddev launch
 ddev ssh
