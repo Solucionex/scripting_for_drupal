@@ -273,7 +273,7 @@ ddev exec drush cr
 
 # Creates the main custom .gitignore for project.
 echo -e "    \e[1;4;31m18- Downloading the main custom gitignore file...\e[0m"
-wget https://github.com/Solucionex/resources/blob/main/gitignores/drupal9_lightning_gitignore
+wget https://raw.githubusercontent.com/Solucionex/resources/main/gitignores/drupal9_lightning_gitignore
 mv drupal9_lightning_gitignore .gitignore
 
 # Exports an initial dump of the database and the config files.
