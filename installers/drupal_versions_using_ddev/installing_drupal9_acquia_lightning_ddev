@@ -89,13 +89,24 @@ if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php') && geten
 }
 EOF2
 
-# Writes a new README file for project in root.
+# Writes a new README file and some folders for project in root.
 echo -e "    \e[1;4;31m8- Writing a new README file for project...\e[0m"
-cat > README.md << EOF1
+cat > README.md << EOF3
 # $varkeyname
 Welcome to the README file of the project $varkeyname.
-EOF1
+EOF3
 ddev start
+ddev exec mkdir modules/custom
+ddev exec mkdir themes/custom
+cat > docroot/modules/custom/custom_modules.md << EOF4
+# $varkeyname Custom Modules Zone
+Put here your custom modules work.
+EOF4
+cat > docroot/themes/custom/custom_themes.md << EOF5
+# $varkeyname Custom Themes Zone
+Put here your custom Themes work.
+EOF5
+
 
 # Builds the new Drupal Site and clears cache.
 echo -e "    \e[1;4;31m9- Building the new Drupal 9 Site...\e[0m"
@@ -170,7 +181,7 @@ ddev exec cp /var/www/html/docroot/core/themes/bartik/logo.svg /var/www/html/doc
 
 # Creates the custom subtheme basic scaffolding.
 echo -e "    \e[1;4;31m12- Creating the info.yml file for subtheme... \e[0m"
-ddev exec cat > docroot/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF1
+ddev exec cat > docroot/themes/custom/custom_subtheme/custom_subtheme.info.yml << EOF6
 name: Custom Drupal Subtheme
 type: theme 
 description: 'This is a custom Drupal Subtheme'
@@ -181,11 +192,11 @@ base theme: bartik
 libraries:
   - custom_subtheme/global-styling
   - custom_subtheme/global-scripts
-EOF1
+EOF6
   
 # Creates the libraries declaration.
 echo -e "    \e[1;4;31m13- Doing the libraries declaration file for subtheme... \e[0m"
-ddev exec cat > docroot/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF2
+ddev exec cat > docroot/themes/custom/custom_subtheme/custom_subtheme.libraries.yml << EOF7
 global-styling:
   version: 1.x 
   css:
@@ -200,11 +211,11 @@ global-scripts:
     - core/drupal
     - core/drupalSettings
     - core/jquery.once
-EOF2
+EOF7
 
 # Builds the initial JavaScript file.
 echo -e "    \e[1;4;31m14- Builds an initial JavaScript file for subtheme... \e[0m"
-ddev exec cat > docroot/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF3
+ddev exec cat > docroot/themes/custom/custom_subtheme/js/custom_subtheme.js << EOF8
 /**
  * @file Main JS file for the theme.
  */
@@ -263,7 +274,7 @@ parameters:
     exposedHeaders: false
     maxAge: false
     supportsCredentials: false
-EOF4
+EOF8
 
 # Install and enable subtheme.
 echo -e "    \e[1;4;31m17- Enabling subtheme as default active theme... \e[0m"
