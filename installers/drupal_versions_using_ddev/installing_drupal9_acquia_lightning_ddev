@@ -51,6 +51,7 @@ mkdir ./docroot/libraries
 mkdir ./docroot/libraries/d3
 ddev exec wget https://github.com/Solucionex/resources/archive/main.zip
 ddev exec unzip main.zip
+ddev exec rm main.zip
 ddev exec cp -r ./resources-main/highlight ./libraries/
 ddev exec mv ./libraries/highlight ./libraries/highlightjs
 ddev exec chmod 775 -R ./libraries/highlightjs
@@ -61,7 +62,7 @@ ddev exec mv d3.min.js ./libraries/d3/
 
 # Changes the location of the config/sync folder.
 echo -e "    \e[1;4;31m7- Changing the default location for config files from settings.php...\e[0m"
-ddev exec cat >> web/sites/default/settings.local.php << EOF1
+ddev exec cat >> docroot/sites/default/settings.local.php << EOF1
 <?php
 
 /**
@@ -81,7 +82,7 @@ elseif (empty($settings['config_sync_directory'])) {
 
 EOF1
 
-ddev exec cat >> web/sites/default/settings.php << EOF2
+ddev exec cat >> docroot/sites/default/settings.php << EOF2
 
 // Local customization: Loads the settings.local below the settings.ddev default file.
 if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php') && getenv('IS_DDEV_PROJECT') == 'true') {
