@@ -74,7 +74,7 @@ ddev exec cat >> docroot/sites/default/settings.local.php << EOF1
 if (defined('CONFIG_SYNC_DIRECTORY') && empty(\$config_directories[CONFIG_SYNC_DIRECTORY])) {
   \$config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
 }
-elseif (empty($settings['config_sync_directory'])) {
+elseif (empty(\$settings['config_sync_directory'])) {
   \$settings['config_sync_directory'] = '../config/sync';
 }
 
