@@ -74,7 +74,7 @@ ddev exec cat >> docroot/sites/default/settings.local.php << EOF1
 if (defined('CONFIG_SYNC_DIRECTORY') && empty(\$config_directories[CONFIG_SYNC_DIRECTORY])) {
   \$config_directories[CONFIG_SYNC_DIRECTORY] = '../config/sync';
 }
-elseif (empty($settings['config_sync_directory'])) {
+elseif (empty(\$settings['config_sync_directory'])) {
   \$settings['config_sync_directory'] = '../config/sync';
 }
 
@@ -292,6 +292,7 @@ mv drupal9_lightning_gitignore .gitignore
 echo -e "    \e[1;4;31m19- Saving the first database backup and config files...\e[0m"
 date=$(date +"%Y-%m-%d")
 ddev export-db --file=./backups/db_${varkeyname}_initial_$date.sql.gz
+ddev exec rm -rf /var/www/html/docroot/sites/default/files/sync
 ddev exec drush cex --yes
 git init
 
