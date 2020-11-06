@@ -139,7 +139,7 @@ ddev composer require drupal/login_destination:^2.0@alpha drupal/config_perms:^2
  ddev composer require drupal/domain drupal/tmgmt 
 ## Enabling step by step in order to avoid global errors.
 ddev exec drush en -y admin_toolbar admin_toolbar_tools admin_toolbar_links_access_filter
-ddev exec drush en -y devel webprofiler devel_entity_updates coffee
+ddev exec drush en -y devel devel_entity_updates coffee
 ddev exec drush en -y pathauto menu_admin_per_menu total_control taxonomy_access_fix
 ddev exec drush en -y config_split config_update config_update_ui config_import
 ddev exec drush en -y paragraphs classy_paragraphs entity_reference_revisions entity_reference ds ds_extras metatag
@@ -148,6 +148,10 @@ ddev exec drush en -y captcha honeypot recaptcha
 ddev exec drush en -y webform webform_ui webform_views webform_templates webform_bootstrap
 ddev exec drush en -y better_exposed_filters views_bootstrap views_bulk_operations views_infinite_scroll viewsreference
 ddev exec drush en -y login_destination config_perms eu_cookie_compliance
+ddev exec drush en -y lightning_media_bulk_upload
+ddev exec drush en -y lightning_media_audio lightning_media_document lightning_media_document
+ddev exec drush en -y lightning_media_image lightning_media_instagram lightning_media_slideshow 
+ddev exec drush en -y lightning_media_twitter lightning_media_video video_embed_media 
 ddev exec drush en -y domain 
 ddev exec drush en -y domain_access,
 ddev exec drush en -y domain_alias,
