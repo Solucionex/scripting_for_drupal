@@ -15,8 +15,8 @@
 #-----------------------------------------------------------
 #
 
-sudo apt --qq update &&
-sudo apt -qq upgrade && 
+sudo apt -yqq update &&
+sudo apt -yqq upgrade && 
 sudo apt -yqq install   \  
 php7.4 		          \
 php7.4-bcmath           \
