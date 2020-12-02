@@ -1,0 +1,26 @@
+#!/bin/bash
+# -*- ENCODING: UTF-8 -*-
+#
+#
+#-----------------------------------------------------------------------------------
+# 
+# Installs an initial tool set for measuring performance of a Drupal installation
+# [David Rodríguez, @davidjguru] [davidjguru@solucionex.com]
+# Title: Toolset for performance
+# Description: Just installs some basic packages for running tests performance. 
+#
+# davidjguru@solucionex.com
+# https://www.therussianlullaby.com
+# https://www.solucionex.com
+#-----------------------------------------------------------
+#
+
+sudo apt -yqq update &&
+sudo apt -yqq upgrade && 
+sudo apt -yqq install \
+apache2-utils \
+parallel \
+gnuplot \ 
+tmux \
+atop \
+siege
